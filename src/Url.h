@@ -3,14 +3,8 @@
 #include <string>
 using std::string;
 
-#include <string_view>
-using std::string_view;
-
-#include <tuple>
-using std::tuple;
-
-#include <vector>
-using std::vector;
+#include <map>
+using std::multimap;
 
 
 // This class takes inspiration and some source code from 
@@ -29,51 +23,45 @@ namespace homer6{
 			https://tools.ietf.org/html/rfc3986
 			https://tools.ietf.org/html/rfc6874
 			https://tools.ietf.org/html/rfc7320
+			and adheres to https://rosettacode.org/wiki/URL_parser examples.
 
-			and adhere to https://rosettacode.org/wiki/URL_parser examples.
+		Url and UrlView will use default ports for known schemes, if the port is not explicitly provided.
 
 	*/
 
-	class UrlView;
 
 
-	class Url : public UrlView {
-
-		protected:
-			string url;
-
-	};
-
-
-	class UrlView{
+	class Url{
 
 		public:
 
-			Url(){}
-			Url( const char* s );
+			Url();
 			Url( const std::string& s );
 
-			string_view getScheme() const;
-			string_view getUsername() const;
-			string_view getPassword() const;
-			string_view getHost() const;
+			string getScheme() const;
+			string getUsername() const;
+			string getPassword() const;
+			string getHost() const;
 			unsigned short getPort() const;
-			string_view getPath() const;
-			vector<tuple<string_view,string_view>> getQueryParameters() const;
-			string_view getFragment() const;
+			string getPath() const;
+			string getQuery() const;
+			const multimap<string,string>& getQueryParameters() const;
+			string getFragment() const;
 
 
 			enum components_type{
-				protocol_component = 1,
-				user_info_component = 2,
-				host_component = 4,
-				port_component = 8,
-				path_component = 16,
-				query_component = 32,
-				fragment_component = 64,
+				scheme_component = 1,
+				username_component = 2,
+				password_component = 4,
+				host_component = 8,
+				port_component = 16,
+				path_component = 32,
+				query_component = 64,
+				fragment_component = 128,
 				all_components = 
-					protocol_component | 
-					user_info_component | 
+					scheme_component | 
+					username_component | 
+					password_component | 
 					host_component | 
 					port_component | 
 					path_component | 
@@ -82,9 +70,9 @@ namespace homer6{
 			};
 
 
-			string to_string( int components = all_components ) const;
+			string toString( int components = all_components ) const;
 
-			static Url from_string( const std::string& s );
+			static Url fromString( const std::string& s );
 
 			friend bool operator==(const Url& a, const Url& b);
 			friend bool operator!=(const Url& a, const Url& b);
@@ -95,14 +83,15 @@ namespace homer6{
 
 			static bool unescape_path(const std::string& in, std::string& out);
 
-			string_view scheme;
-			string_view username;
-			string_view password;
-			string_view host;
-			string_view port;
-			string_view path;
-			vector<tuple<string_view,string_view>> query_parameters;
-			string_view fragment;
+			string scheme;
+			string username;
+			string password;
+			string host;
+			string port;
+			string path;
+			string query;
+			multimap<string,string> query_parameters;
+			string fragment;
 
 			bool ipv6_host = false;
 
