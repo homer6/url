@@ -54,6 +54,14 @@ namespace homer6{
         if( this->scheme == "http" ) return 80;     
         if( this->scheme == "ssh" ) return 22;
         if( this->scheme == "ftp" ) return 21;
+        if( this->scheme == "mysql" ) return 3306;
+        if( this->scheme == "mongo" ) return 27017;
+        if( this->scheme == "mongo+srv" ) return 27017;
+        if( this->scheme == "kafka" ) return 9092;
+        if( this->scheme == "postgres" ) return 5432;
+        if( this->scheme == "postgresql" ) return 5432;
+        if( this->scheme == "redis" ) return 6379;
+        if( this->scheme == "zookeeper" ) return 2181;
 
         return 0;
 
