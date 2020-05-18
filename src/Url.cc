@@ -1,3 +1,7 @@
+// homer::Url v0.1.0
+// MIT License
+// https://github.com/homer6/url
+
 #include "Url.h"
 
 #include <cstring>
@@ -5,15 +9,6 @@
 #include <cstdlib>
 #include <algorithm>
 #include <stdexcept>
-
-
-
-#include <iostream>
-using std::cout;
-using std::cerr;
-using std::endl;
-
-
 
 
 namespace homer6{

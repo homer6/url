@@ -1,6 +1,13 @@
 #pragma once
 
 #include <string>
+// homer::Url v0.1.0
+// MIT License
+// https://github.com/homer6/url
+
+// This class takes inspiration and some source code from 
+// https://github.com/chriskohlhoff/urdl/blob/master/include/urdl/url.hpp
+
 using std::string;
 
 #include <string_view>
@@ -8,10 +15,6 @@ using std::string_view;
 
 #include <map>
 using std::multimap;
-
-
-// This class takes inspiration and some source code from 
-// https://github.com/chriskohlhoff/urdl/blob/master/include/urdl/url.hpp
 
 
 namespace homer6{
@@ -31,7 +34,6 @@ namespace homer6{
         Url and UrlView will use default ports for known schemes, if the port is not explicitly provided.
 
     */
-
 
 
     class Url{
