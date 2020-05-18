@@ -65,6 +65,7 @@ int main(){
     
     if( test_url( "urn:example:animal:ferret:nose", "urn", "", "", "", 0, "example:animal:ferret:nose", "", "" )){ success_count++; } test_count++;
 
+    //invalid scheme, because it contains a colon: https://tools.ietf.org/html/rfc3986#section-3.1
     //if( test_url( "jdbc:mysql://test_user:ouupppssss@localhost:3306/sakila?profileSQL=true", "jdbc:mysql", "localhost", 3306, "/sakila", "profileSQL=true", "" )){ success_count++; } test_count++;
 
     if( test_url( "ftp://ftp.is.co.za/rfc/rfc1808.txt", "ftp", "", "", "ftp.is.co.za", 21, "/rfc/rfc1808.txt", "", "" )){ success_count++; } test_count++;
@@ -88,7 +89,7 @@ int main(){
     if( test_url( "https://bob:pass@example.com/place", "https", "bob", "pass", "example.com", 443, "/place", "", "" )){ success_count++; } test_count++;
 
     if( test_url( "http://example.com/?a=1&b=2+2&c=3&c=4&d=%65%6e%63%6F%64%65%64", "http", "", "", "example.com", 80, "/", "a=1&b=2+2&c=3&c=4&d=%65%6e%63%6F%64%65%64", "" )){ success_count++; } test_count++;
-    
+
     if( test_url( "postgresql://username@localhost/dbname?connect_timeout=10&application_name=myapp&ssl=true", "postgresql", "username", "", "localhost", 5432, "/dbname", "connect_timeout=10&application_name=myapp&ssl=true", "" )){ success_count++; } test_count++;
 
     cout << endl << "Passed: " << success_count << " / " << test_count << endl;
