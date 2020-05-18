@@ -13,3 +13,10 @@ make
 ```
 
 
+### Tested On
+
+```
+Ubuntu 18.04.3 LTS
+gcc version 7.5.0
+x86_64-linux-gnu
+```
