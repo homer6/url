@@ -22,7 +22,7 @@ bool equal( const T& left, const T& right ){
 
 
 
-bool test_url( const string& url_source, const string& scheme, const string& host, unsigned short port, const string& path, const string& query, const string& fragment ){
+bool test_url( const string& url_source, const string& scheme, const string& username, const string& password, const string& host, unsigned short port, const string& path, const string& query, const string& fragment ){
     
     bool success = true;
 
@@ -31,6 +31,8 @@ bool test_url( const string& url_source, const string& scheme, const string& hos
     cout << endl << url_source << endl;
 
     if( !equal(url.getScheme(), scheme) ) success = false;
+    if( !equal(url.getUsername(), username) ) success = false;
+    if( !equal(url.getPassword(), password) ) success = false;
     if( !equal(url.getHost(), host) ) success = false;
     if( !equal(url.getPort(), port) ) success = false;
     if( !equal(url.getPath(), path) ) success = false;
@@ -53,65 +55,42 @@ bool test_url( const string& url_source, const string& scheme, const string& hos
 
 int main(){
 
-    int fail_count = 0;
+    int success_count = 0;
     int test_count = 0;
     
 
-    if( !test_url(
-        "https://www.wikipedia.org/what-me-worry?hello=there#wonder",
-        "https",
-        "www.wikipedia.org",
-        443,
-        "/what-me-worry",
-        "hello=there",
-        "wonder"
-    )) fail_count++;
-    test_count++;
+    if( test_url( "https://www.wikipedia.org/what-me-worry?hello=there#wonder", "https", "", "", "www.wikipedia.org", 443, "/what-me-worry", "hello=there", "wonder" )){ success_count++; } test_count++;
+
+    if( test_url( "foo://example.com:8042/over/there?name=ferret#nose", "foo", "", "", "example.com", 8042, "/over/there", "name=ferret", "nose" )){ success_count++; } test_count++;
+    
+    //if( test_url( "urn:example:animal:ferret:nose", "urn", "", "", "", 0, "example:animal:ferret:nose", "", "" )){ success_count++; } test_count++;
+
+    //if( test_url( "jdbc:mysql://test_user:ouupppssss@localhost:3306/sakila?profileSQL=true", "jdbc:mysql", "localhost", 3306, "/sakila", "profileSQL=true", "" )){ success_count++; } test_count++;
+
+    if( test_url( "ftp://ftp.is.co.za/rfc/rfc1808.txt", "ftp", "", "", "ftp.is.co.za", 21, "/rfc/rfc1808.txt", "", "" )){ success_count++; } test_count++;
+
+    if( test_url( "http://www.ietf.org/rfc/rfc2396.txt#header1", "http", "", "", "www.ietf.org", 80, "/rfc/rfc2396.txt", "", "header1" )){ success_count++; } test_count++;
+
+    if( test_url( "ldap://[2001:db8::7]/c=GB?objectClass=one&objectClass=two", "ldap", "", "", "2001:db8::7", 389, "/c=GB", "objectClass=one&objectClass=two", "" )){ success_count++; } test_count++;
+    
+    //if( test_url( "mailto:John.Maples@example.com", "mailto", "", "", "", 0, "John.Maples@example.com", "", "" )){ success_count++; } test_count++;
+
+    //if( test_url( "news:comp.infosystems.www.servers.unix", "news", "", "", "", 0, "comp.infosystems.www.servers.unix", "", "" )){ success_count++; } test_count++;
+    
+    //if( test_url( "tel:+1-816-555-1212", "tel", "", "", "", 0, "+1-816-555-1212", "", "" )){ success_count++; } test_count++;
+
+    if( test_url( "telnet://192.0.2.16:80/", "telnet", "", "", "192.0.2.16", 80, "/", "", "" )){ success_count++; } test_count++;
+
+    //if( test_url( "urn:oasis:names:specification:docbook:dtd:xml:4.1.2", "urn", "", "", "", 0, "oasis:names:specification:docbook:dtd:xml:4.1.2", "", "" )){ success_count++; } test_count++;
+    
+    if( test_url( "ssh://alice@example.com", "ssh", "alice", "", "example.com", 22, "", "", "" )){ success_count++; } test_count++;
+
+    if( test_url( "https://bob:pass@example.com/place", "https", "bob", "pass", "example.com", 443, "/place", "", "" )){ success_count++; } test_count++;
+
+    if( test_url( "http://example.com/?a=1&b=2+2&c=3&c=4&d=%65%6e%63%6F%64%65%64", "http", "", "", "example.com", 80, "/", "a=1&b=2+2&c=3&c=4&d=%65%6e%63%6F%64%65%64", "" )){ success_count++; } test_count++;
 
 
-    if( !test_url(
-        "jdbc:mysql://test_user:ouupppssss@localhost:3306/sakila?profileSQL=true",
-        "jdbc:mysql",
-        "localhost",
-        3306,
-        "/sakila",
-        "profileSQL=true",
-        ""
-    )) fail_count++; 
-    test_count++;
-
-
-    if( !test_url(
-        "ftp://ftp.is.co.za/rfc/rfc1808.txt",
-        "ftp",
-        "ftp.is.co.za",
-        21,
-        "/rfc/rfc1808.txt",
-        "",
-        ""
-    )) fail_count++;
-    test_count++;
-
-
-
-    cout << endl << "Total Tests: " << test_count << endl;
-    cout << "Total Failed: " << fail_count << endl;
-
-  
-  /*
-  http://www.ietf.org/rfc/rfc2396.txt#header1
-  ldap://[2001:db8::7]/c=GB?objectClass=one&objectClass=two
-  mailto:John.Doe@example.com
-  news:comp.infosystems.www.servers.unix
-  tel:+1-816-555-1212
-  telnet://192.0.2.16:80/
-  urn:oasis:names:specification:docbook:dtd:xml:4.1.2
-
-    */
-
-
-
-
+    cout << endl << "Passed: " << success_count << " / " << test_count << endl;
 
     return 0;
 

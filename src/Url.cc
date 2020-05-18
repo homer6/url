@@ -62,6 +62,8 @@ namespace homer6{
         if( this->scheme == "postgresql" ) return 5432;
         if( this->scheme == "redis" ) return 6379;
         if( this->scheme == "zookeeper" ) return 2181;
+        if( this->scheme == "ldap" ) return 389;
+        if( this->scheme == "ldaps" ) return 636;
 
         return 0;
 

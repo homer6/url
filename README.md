@@ -8,8 +8,7 @@ Pull requests and issues welcome!
 
 ```
 cmake .
-make
-./url_test
+make && ./url_test
 ```
 
 
