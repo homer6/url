@@ -1,4 +1,4 @@
-// homer::Url v0.1.0
+// homer::Url v0.1.1
 // MIT License
 // https://github.com/homer6/url
 
@@ -60,6 +60,10 @@ namespace homer6{
             friend bool operator!=(const Url& a, const Url& b);
             friend bool operator<(const Url& a, const Url& b);
 
+            void setSecure( bool secure );
+
+            bool isIpv6() const;
+            bool isSecure() const;
 
         protected:
 
@@ -81,6 +85,7 @@ namespace homer6{
             multimap<string,string> query_parameters;
             string fragment;
 
+            bool secure = false;
             bool ipv6_host = false;
             bool authority_present = false;
 

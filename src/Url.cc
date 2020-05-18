@@ -1,4 +1,4 @@
-// homer::Url v0.1.0
+// homer::Url v0.1.1
 // MIT License
 // https://github.com/homer6/url
 
@@ -102,6 +102,24 @@ namespace homer6{
     string Url::getFragment() const{
         return this->fragment;
     }
+
+
+    bool Url::isIpv6() const{
+        return this->ipv6_host;
+    }
+
+
+    void Url::setSecure( bool secure_ ){
+        this->secure = secure_;
+    }
+
+    bool Url::isSecure() const{
+        return this->secure;
+    }
+
+
+
+
 
 
 
@@ -255,6 +273,7 @@ namespace homer6{
                 this->left_position++;
                 this->host = this->captureUpTo( "]", "Malformed ipv6" );
                 this->left_position++;
+                this->ipv6_host = true;
             }else{
 
                 if( this->existsForward(":") ){
@@ -292,6 +311,26 @@ namespace homer6{
                 this->username = this->captureUpTo( ":" );
 
             }
+
+
+        //update secure
+            if( this->scheme == "ssh" || this->scheme == "https" || this->port == "443" ){
+                this->secure = true;
+            }
+
+            if( this->scheme == "postgres" || this->scheme == "postgresql" ){
+
+                //reset parse target to query
+                this->parse_target = this->query;
+                this->left_position = 0;
+                this->right_position = 0;
+
+                if( this->existsForward("ssl=true") ){
+                    this->secure = true;
+                }
+
+            }
+
 
 
     }
