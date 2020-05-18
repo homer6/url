@@ -1,4 +1,4 @@
-// homer::Url v0.1.1
+// homer::Url v0.1.2
 // MIT License
 // https://github.com/homer6/url
 
@@ -64,6 +64,10 @@ namespace homer6{
 
             bool isIpv6() const;
             bool isSecure() const;
+
+            string toString() const;
+            explicit operator string() const;
+
 
         protected:
 

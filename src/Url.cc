@@ -1,4 +1,4 @@
-// homer::Url v0.1.1
+// homer::Url v0.1.2
 // MIT License
 // https://github.com/homer6/url
 
@@ -463,6 +463,18 @@ namespace homer6{
 
     }
 
+
+
+    string Url::toString() const{
+
+        return this->whole_url_storage;
+
+    }
+
+
+    Url::operator string() const{
+        return this->toString();
+    }
 
 
 }

@@ -7,6 +7,10 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
+#include <string>
+using std::string;
+
+
 template<class T>
 bool equal( const T& left, const T& right ){
 
@@ -92,6 +96,10 @@ int main(){
     if( test_url( "http://example.com/?a=1&b=2+2&c=3&c=4&d=%65%6e%63%6F%64%65%64", "http", "", "", "example.com", 80, "/", "a=1&b=2+2&c=3&c=4&d=%65%6e%63%6F%64%65%64", "", false, false )){ success_count++; } test_count++;
 
     if( test_url( "postgresql://username@localhost/dbname?connect_timeout=10&application_name=myapp&ssl=true", "postgresql", "username", "", "localhost", 5432, "/dbname", "connect_timeout=10&application_name=myapp&ssl=true", "", true, false )){ success_count++; } test_count++;
+
+
+    Url url("ssh://alice@example.com");
+    if( equal(string("ssh://alice@example.com"), string(url)) ){ success_count++; } test_count++;
 
     cout << endl << "Passed: " << success_count << " / " << test_count << endl;
 
