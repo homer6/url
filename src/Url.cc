@@ -3,6 +3,17 @@
 #include <cstring>
 #include <cctype>
 #include <cstdlib>
+#include <algorithm>
+#include <stdexcept>
+
+
+
+#include <iostream>
+using std::cout;
+using std::cerr;
+using std::endl;
+
+
 
 
 namespace homer6{
@@ -15,7 +26,7 @@ namespace homer6{
 
 
     Url::Url( const string& s ){
-        *this = this->fromString(s);
+        this->fromString(s);
     }
 
 
@@ -99,165 +110,194 @@ namespace homer6{
 
 
 
-    string Url::toString( int components ) const{
+    string_view Url::captureUpTo( const string_view right_delimiter, const string& error_message ){
 
-        std::string current_string;
+        this->right_position = this->parse_target.find_first_of( right_delimiter, this->left_position );
 
-        if( (components & this->scheme_component) != 0 && !this->scheme.empty() ){
-            current_string = this->scheme;
-            current_string += "://";
+        if( right_position == std::string::npos && error_message.size() ){
+            throw std::runtime_error(error_message);
         }
 
-        if( (components & username_component) != 0 && !this->username.empty() ){
-            current_string += this->username;
+        string_view captured = this->parse_target.substr( this->left_position, this->right_position - this->left_position );
 
-            if( (components & password_component) != 0 && !this->password.empty() ){
-                current_string += ":";
-                current_string += this->password;
-            }
+        return captured;
 
-            current_string += "@";
+    }
+
+
+    bool Url::moveBefore( const string_view right_delimiter ){
+
+        size_t position = this->parse_target.find_first_of( right_delimiter, this->left_position );
+
+        if( position != std::string::npos ){
+            this->left_position = position;
+            return true;
         }
 
-        if( (components & host_component) != 0 ){
-            if( this->ipv6_host ) current_string += "[";
-            current_string += host;
-            if( this->ipv6_host ) current_string += "]";
+        return false;
+
+    }
+
+    bool Url::existsForward( const string_view right_delimiter ){
+
+        size_t position = this->parse_target.find_first_of( right_delimiter, this->left_position );
+
+        if( position != std::string::npos ){
+            return true;
         }
 
-        if( (components & port_component) != 0 && !this->port.empty() ){
-            current_string += ":";
-            current_string += this->port;
-        }
-
-        if( (components & path_component) != 0 && !this->path.empty() ){
-            current_string += this->path;
-        }
-
-        if( (components & query_component) != 0 && !this->query.empty() ){
-            current_string += "?";
-            current_string += this->query;
-        }
-
-        if( (components & fragment_component) != 0 && !this->fragment.empty() ){
-            current_string += "#";
-            current_string += this->fragment;
-        }
-
-        return current_string;
+        return false;
 
     }
 
 
 
-    Url Url::fromString( const std::string& source_string ){
 
-        //string::const_iterator it = source_string.begin();
-        const char *s = const_cast<const char*>( source_string.c_str() );
+    void Url::fromString( const std::string& source_string ){
 
-        Url new_url;
+        this->whole_url_storage = source_string;  //copy
 
-        // scheme
-            std::size_t length = std::strcspn( s, ":" );
-            new_url.scheme.assign(s, s + length);
-            for( std::size_t i = 0; i < new_url.scheme.length(); ++i ){
-                new_url.scheme[i] = std::tolower(new_url.scheme[i]);
+
+        //reset target
+        this->parse_target = this->whole_url_storage;
+        this->left_position = 0;
+        this->right_position = 0;
+
+
+        this->authority_present = false;
+
+
+        // scheme                   
+            this->scheme = this->captureUpTo( ":", "Expected : in Url" );
+            std::transform( 
+                this->scheme.begin(), this->scheme.end(), 
+                this->scheme.begin(), []( string_view::value_type c){ return std::tolower(c); }
+            );
+            this->left_position += scheme.size() + 1;
+
+
+        // authority
+
+            if( this->moveBefore( "//" ) ){
+                this->authority_present = true;
+                this->left_position += 2;
             }
-            s += length;
+
+            if( this->authority_present ){
+
+                this->authority = this->captureUpTo( "/" );
+
+                bool path_exists = false;
+
+                if( this->moveBefore( "/" ) ){
+                    path_exists = true;
+                }
+
+                if( this->existsForward("?") ){
+
+                    this->path = this->captureUpTo( "?" );
+                    this->moveBefore("?");
+                    this->left_position++;
+
+                    if( this->existsForward("#") ){
+                        this->query = this->captureUpTo( "#" );
+                        this->moveBefore("#");
+                        this->left_position++;
+                        this->fragment = this->captureUpTo( "#" );
+                    }else{
+                        //no fragment
+                        this->query = this->captureUpTo( "#" );
+                    }
+
+                }else{
+
+                    //no query
+                    if( this->existsForward("#") ){                        
+                        this->path = this->captureUpTo( "#" );
+                        this->moveBefore("#");
+                        this->left_position++;
+                        this->fragment = this->captureUpTo( "#" );
+                    }else{
+                        //no fragment
+                        if( path_exists ){
+                            this->path = this->captureUpTo( "#" );    
+                        }
+                        
+                    }
+
+                }
+
+            }else{
+
+                this->path = this->captureUpTo( "#" );
+
+            }
 
 
-        // "://".
-            if (*s++ != ':') throw std::runtime_error( "Expected : in url" );
-            if (*s++ != '/') throw std::runtime_error( "Expected / in url" );
-            if (*s++ != '/') throw std::runtime_error( "Expected / in url" );
+
+        //parse authority
 
 
-        // username & password
-            length = std::strcspn( s, "@:[/?#" );
-            if( s[length] == '@' ){
+            //reset target
+            this->parse_target = this->authority;
+            this->left_position = 0;
+            this->right_position = 0;
 
-                new_url.username.assign( s, s + length );
-                s += length + 1;
 
-            }else if( s[length] == ':' ){
+            if( this->existsForward("@") ){
 
-                std::size_t length2 = std::strcspn( s + length, "@/?#" );
-                if (s[length + length2] == '@'){
-                    new_url.password.assign(s, s + length2 );
-                    s += length2 + 1;
+                this->user_info = this->captureUpTo( "@" );
+                this->moveBefore("@");
+                this->left_position++;
+
+            }else{
+                //no user_info
+
+            }
+
+            //detect ipv6
+            if( this->existsForward("[") ){
+                this->left_position++;
+                this->host = this->captureUpTo( "]", "Malformed ipv6" );
+                this->left_position++;
+            }else{
+
+                if( this->existsForward(":") ){
+                    this->host = this->captureUpTo( ":" );
+                    this->moveBefore(":");
+                    this->left_position++;
+                    this->port = this->captureUpTo( "#" );
+                }else{
+                    //no port
+                    this->host = this->captureUpTo( ":" );
                 }
 
             }
 
 
-        // host
-            if( *s == '[' ){
+        //parse user_info
 
-                length = std::strcspn( ++s, "]" );
-                if( s[length] != ']' ) throw std::runtime_error( "Expected closing ] in ipv6 host" );
-
-                new_url.host.assign( s, s + length );
-                new_url.ipv6_host = true;
-                s += length + 1;
-
-                if( std::strcspn(s, ":/?#") != 0 ) throw std::runtime_error( "Expected host delimeter" );
-
-            }else{
-
-                length = std::strcspn( s, ":/?#" );
-                new_url.host.assign( s, s + length );
-                s += length;
-
-            }
+            //reset target
+            this->parse_target = this->user_info;
+            this->left_position = 0;
+            this->right_position = 0;
 
 
-        // port
-            if( *s == ':' ){
-                
-                length = std::strcspn( ++s, "/?#" );
-                
-                if( length == 0 ) throw std::runtime_error( "Expected port delimeter" );
+            if( this->existsForward(":") ){
 
-                new_url.port.assign( s, s + length );
+                this->username = this->captureUpTo( ":" );
+                this->moveBefore(":");
+                this->left_position++;
 
-                for( std::size_t i = 0; i < new_url.port.length(); ++i ){
-
-                    if( !std::isdigit(new_url.port[i]) ) throw std::runtime_error( "Expected port to be a numeric" );
-                }
-
-                s += length;
-
-            }
-
-
-        // path
-            if( *s == '/' ){
-
-                length = std::strcspn( s, "?#" );
-                new_url.path.assign(s, s + length);
-                std::string tmp_path;
-                if( !unescape_path(new_url.path, tmp_path) ) throw std::runtime_error( "Failed to unescape path" );
-                s += length;
+                this->password = this->captureUpTo( "#" );
 
             }else{
-                
-                new_url.path = "/";
+                //no password
+
+                this->username = this->captureUpTo( ":" );
 
             }
-        
 
-        // query
-            if( *s == '?' ){
-                length = std::strcspn( ++s, "#" );
-                new_url.query.assign( s, s + length );
-                s += length;
-            }
-
-
-        // fragment
-            if( *s == '#' ) new_url.fragment.assign( ++s );
-
-        return new_url;
 
     }
 

@@ -3,6 +3,9 @@
 #include <string>
 using std::string;
 
+#include <string_view>
+using std::string_view;
+
 #include <map>
 using std::multimap;
 
@@ -49,30 +52,7 @@ namespace homer6{
             string getFragment() const;
 
 
-            enum components_type{
-                scheme_component = 1,
-                username_component = 2,
-                password_component = 4,
-                host_component = 8,
-                port_component = 16,
-                path_component = 32,
-                query_component = 64,
-                fragment_component = 128,
-                all_components = 
-                    scheme_component | 
-                    username_component | 
-                    password_component | 
-                    host_component | 
-                    port_component | 
-                    path_component | 
-                    query_component | 
-                    fragment_component
-            };
-
-
-            string toString( int components = all_components ) const;
-
-            static Url fromString( const std::string& s );
+            void fromString( const std::string& s );
 
             friend bool operator==(const Url& a, const Url& b);
             friend bool operator!=(const Url& a, const Url& b);
@@ -83,7 +63,13 @@ namespace homer6{
 
             static bool unescape_path(const std::string& in, std::string& out);
 
+            string_view captureUpTo( const string_view right_delimiter, const string& error_message = "" );            
+            bool moveBefore( const string_view right_delimiter );
+            bool existsForward( const string_view right_delimiter );       
+
             string scheme;
+            string authority;
+            string user_info;
             string username;
             string password;
             string host;
@@ -94,6 +80,12 @@ namespace homer6{
             string fragment;
 
             bool ipv6_host = false;
+            bool authority_present = false;
+
+            string whole_url_storage;
+            size_t left_position = 0;
+            size_t right_position = 0;
+            string_view parse_target;
 
     };
 
