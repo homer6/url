@@ -1,6 +1,3 @@
-#pragma once
-
-#include <string>
 // homer::Url v0.1.0
 // MIT License
 // https://github.com/homer6/url
@@ -8,6 +5,9 @@
 // This class takes inspiration and some source code from 
 // https://github.com/chriskohlhoff/urdl/blob/master/include/urdl/url.hpp
 
+#pragma once
+
+#include <string>
 using std::string;
 
 #include <string_view>
