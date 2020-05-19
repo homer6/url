@@ -95,9 +95,11 @@ namespace homer6{
 
 
 
+    /*
     const multimap<string_view,string_view>& Url::getQueryParameters() const{
         return this->query_parameters;
     }
+    */
 
 
 

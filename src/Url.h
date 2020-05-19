@@ -56,7 +56,7 @@ namespace homer6{
             unsigned short getPort() const;
             string_view getPath() const;
             string_view getQuery() const;
-            const multimap<string_view,string_view>& getQueryParameters() const;
+            //const multimap<string_view,string_view>& getQueryParameters() const;
             string_view getFragment() const;
 
 
@@ -92,7 +92,7 @@ namespace homer6{
             string_view port;
             string_view path;
             string_view query;
-            multimap<string_view,string_view> query_parameters;
+            //multimap<string_view,string_view> query_parameters;
             string_view fragment;
 
             bool secure = false;
