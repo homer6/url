@@ -20,6 +20,12 @@ using std::multimap;
 namespace homer6{
 
     /* 
+        NOTE: The current version is in draft form. UrlView does not exist yet. But, the current Url class 
+              adheres to https://rosettacode.org/wiki/URL_parser examples.
+
+              Please see the unit test for some examples.
+
+
         Url only makes one string copy and its storage is self-contained.
     
         UrlView is identical to Url, except UrlView does not make any string copies and thus depends on the 
