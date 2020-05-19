@@ -1,4 +1,4 @@
-// homer::Url v0.1.2
+// homer::Url v0.2.0
 // MIT License
 // https://github.com/homer6/url
 
