@@ -26,7 +26,7 @@ bool equal( const T& left, const T& right ){
 
 
 
-bool test_url( const string& url_source, const string_view scheme, const string_view username, const string_view password, const string_view host, unsigned short port, const string_view path, const string_view query, const string_view fragment, bool is_secure, bool is_ipv6 ){
+bool test_url( const string& url_source, const string& scheme, const string& username, const string& password, const string& host, unsigned short port, const string& path, const string& query, const string& fragment, bool is_secure, bool is_ipv6 ){
     
     bool success = true;
 
@@ -98,8 +98,8 @@ int main(){
     if( test_url( "postgresql://username@localhost/dbname?connect_timeout=10&application_name=myapp&ssl=true", "postgresql", "username", "", "localhost", 5432, "/dbname", "connect_timeout=10&application_name=myapp&ssl=true", "", true, false )){ success_count++; } test_count++;
 
 
-    //Url url("ssh://alice@example.com");
-    //if( equal(string("ssh://alice@example.com"), string(url)) ){ success_count++; } test_count++;
+    Url url("ssh://alice@example.com");
+    if( equal(string("ssh://alice@example.com"), string(url)) ){ success_count++; } test_count++;
 
     cout << endl << "Passed: " << success_count << " / " << test_count << endl;
 

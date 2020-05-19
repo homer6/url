@@ -1,4 +1,4 @@
-// homer::Url v0.2.0
+// homer::Url v0.3.0
 // MIT License
 // https://github.com/homer6/url
 
@@ -26,25 +26,25 @@ namespace homer6{
 
 
 
-    string_view Url::getScheme() const{
+    string Url::getScheme() const{
         return this->scheme;
     }
 
 
 
-    string_view Url::getUsername() const{
+    string Url::getUsername() const{
         return this->username;
     }
 
 
 
-    string_view Url::getPassword() const{
+    string Url::getPassword() const{
         return this->password;
     }
 
 
 
-    string_view Url::getHost() const{
+    string Url::getHost() const{
         return this->host;
     }
 
@@ -53,7 +53,7 @@ namespace homer6{
     unsigned short Url::getPort() const{
 
         if( this->port.size() > 0 ){
-            return std::atoi( string(this->port).c_str() );
+            return std::atoi( this->port.c_str() );
         }
 
         if( this->scheme == "https" ) return 443;
@@ -77,33 +77,29 @@ namespace homer6{
 
 
 
-    string_view Url::getPath() const{
+    string Url::getPath() const{
 
-        //std::string tmp_path;
-        //unescape_path( this->path, tmp_path );
-        //return tmp_path;
-
-        return this->path;
+        std::string tmp_path;
+        unescape_path( this->path, tmp_path );
+        return tmp_path;
 
     }
 
 
 
-    string_view Url::getQuery() const{
+    string Url::getQuery() const{
         return this->query;
     }
 
 
 
-    /*
-    const multimap<string_view,string_view>& Url::getQueryParameters() const{
+    const multimap<string,string>& Url::getQueryParameters() const{
         return this->query_parameters;
     }
-    */
 
 
 
-    string_view Url::getFragment() const{
+    string Url::getFragment() const{
         return this->fragment;
     }
 
@@ -172,11 +168,11 @@ namespace homer6{
 
     void Url::fromString( const std::string& source_string ){
 
-        //this->whole_url_storage = source_string;  //copy
+        this->whole_url_storage = source_string;  //copy
 
 
         //reset target
-        this->parse_target = source_string; //uses supplied storage
+        this->parse_target = this->whole_url_storage;
         this->left_position = 0;
         this->right_position = 0;
 
@@ -186,12 +182,10 @@ namespace homer6{
 
         // scheme                   
             this->scheme = this->captureUpTo( ":", "Expected : in Url" );
-            /*
             std::transform( 
                 this->scheme.begin(), this->scheme.end(), 
                 this->scheme.begin(), []( string_view::value_type c){ return std::tolower(c); }
             );
-            */
             this->left_position += scheme.size() + 1;
 
 
@@ -470,7 +464,7 @@ namespace homer6{
     }
 
 
-    /*
+
     string Url::toString() const{
 
         return this->whole_url_storage;
@@ -481,7 +475,7 @@ namespace homer6{
     Url::operator string() const{
         return this->toString();
     }
-    */
+
 
 }
 

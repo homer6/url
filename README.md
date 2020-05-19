@@ -1,8 +1,14 @@
-# C++17 URL Parser w/ string_view
+# C++17 URL Parser
 
 This header file and source file are designed to be just copied directly into your C++17 project.
 
 Pull requests and issues welcome!
+
+v0.2.0 uses string_view throughout. However, I reverted it back to strings in v0.3.0 because the
+performance was only 25% faster with string_view, but it made it harder (and less safe) to work with.
+
+	- 11.9s for 10 million parsed URLs with string
+	- 8.8s for 10 million parsed URLs with string_view
 
 ### Running Tests
 
