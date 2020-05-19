@@ -49,15 +49,15 @@ namespace homer6{
             Url();
             Url( const std::string& s );
 
-            string getScheme() const;
-            string getUsername() const;
-            string getPassword() const;
-            string getHost() const;
+            string_view getScheme() const;
+            string_view getUsername() const;
+            string_view getPassword() const;
+            string_view getHost() const;
             unsigned short getPort() const;
-            string getPath() const;
-            string getQuery() const;
-            const multimap<string,string>& getQueryParameters() const;
-            string getFragment() const;
+            string_view getPath() const;
+            string_view getQuery() const;
+            const multimap<string_view,string_view>& getQueryParameters() const;
+            string_view getFragment() const;
 
 
             void fromString( const std::string& s );
@@ -71,8 +71,8 @@ namespace homer6{
             bool isIpv6() const;
             bool isSecure() const;
 
-            string toString() const;
-            explicit operator string() const;
+            //string toString() const;
+            //explicit operator string() const;
 
 
         protected:
@@ -83,23 +83,22 @@ namespace homer6{
             bool moveBefore( const string_view right_delimiter );
             bool existsForward( const string_view right_delimiter );       
 
-            string scheme;
-            string authority;
-            string user_info;
-            string username;
-            string password;
-            string host;
-            string port;
-            string path;
-            string query;
-            multimap<string,string> query_parameters;
-            string fragment;
+            string_view scheme;
+            string_view authority;
+            string_view user_info;
+            string_view username;
+            string_view password;
+            string_view host;
+            string_view port;
+            string_view path;
+            string_view query;
+            multimap<string_view,string_view> query_parameters;
+            string_view fragment;
 
             bool secure = false;
             bool ipv6_host = false;
             bool authority_present = false;
 
-            string whole_url_storage;
             size_t left_position = 0;
             size_t right_position = 0;
             string_view parse_target;

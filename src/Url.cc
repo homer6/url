@@ -26,25 +26,25 @@ namespace homer6{
 
 
 
-    string Url::getScheme() const{
+    string_view Url::getScheme() const{
         return this->scheme;
     }
 
 
 
-    string Url::getUsername() const{
+    string_view Url::getUsername() const{
         return this->username;
     }
 
 
 
-    string Url::getPassword() const{
+    string_view Url::getPassword() const{
         return this->password;
     }
 
 
 
-    string Url::getHost() const{
+    string_view Url::getHost() const{
         return this->host;
     }
 
@@ -53,7 +53,7 @@ namespace homer6{
     unsigned short Url::getPort() const{
 
         if( this->port.size() > 0 ){
-            return std::atoi( this->port.c_str() );
+            return std::atoi( string(this->port).c_str() );
         }
 
         if( this->scheme == "https" ) return 443;
@@ -77,29 +77,31 @@ namespace homer6{
 
 
 
-    string Url::getPath() const{
+    string_view Url::getPath() const{
 
-        std::string tmp_path;
-        unescape_path( this->path, tmp_path );
-        return tmp_path;
+        //std::string tmp_path;
+        //unescape_path( this->path, tmp_path );
+        //return tmp_path;
+
+        return this->path;
 
     }
 
 
 
-    string Url::getQuery() const{
+    string_view Url::getQuery() const{
         return this->query;
     }
 
 
 
-    const multimap<string,string>& Url::getQueryParameters() const{
+    const multimap<string_view,string_view>& Url::getQueryParameters() const{
         return this->query_parameters;
     }
 
 
 
-    string Url::getFragment() const{
+    string_view Url::getFragment() const{
         return this->fragment;
     }
 
@@ -168,11 +170,11 @@ namespace homer6{
 
     void Url::fromString( const std::string& source_string ){
 
-        this->whole_url_storage = source_string;  //copy
+        //this->whole_url_storage = source_string;  //copy
 
 
         //reset target
-        this->parse_target = this->whole_url_storage;
+        this->parse_target = source_string; //uses supplied storage
         this->left_position = 0;
         this->right_position = 0;
 
@@ -182,10 +184,12 @@ namespace homer6{
 
         // scheme                   
             this->scheme = this->captureUpTo( ":", "Expected : in Url" );
+            /*
             std::transform( 
                 this->scheme.begin(), this->scheme.end(), 
                 this->scheme.begin(), []( string_view::value_type c){ return std::tolower(c); }
             );
+            */
             this->left_position += scheme.size() + 1;
 
 
@@ -464,7 +468,7 @@ namespace homer6{
     }
 
 
-
+    /*
     string Url::toString() const{
 
         return this->whole_url_storage;
@@ -475,7 +479,7 @@ namespace homer6{
     Url::operator string() const{
         return this->toString();
     }
-
+    */
 
 }
 
