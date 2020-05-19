@@ -3,3 +3,6 @@
 /Makefile
 /cmake_install.cmake
 /url_test
+/url_profile
+/gmon.out
+/outfile.txt

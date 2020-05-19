@@ -19,3 +19,13 @@ Ubuntu 18.04.3 LTS
 gcc version 7.5.0
 x86_64-linux-gnu
 ```
+
+
+### Profiling
+
+```
+cmake -DCMAKE_CXX_FLAGS=-pg -DCMAKE_EXE_LINKER_FLAGS=-pg -DCMAKE_SHARED_LINKER_FLAGS=-pg .
+make
+time ./url_profile
+gprof url_profile gmon.out > outfile.txt
+```
