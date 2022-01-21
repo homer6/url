@@ -104,6 +104,29 @@ namespace homer6{
     }
 
 
+
+
+    string Url::getFullPath() const{
+
+        string full_path;
+
+        if( this->getPath().size() ){
+            full_path += this->getPath();
+        }
+
+        if( this->getQuery().size() ){
+            full_path += "?" + this->getQuery();
+        }
+
+        if( this->getFragment().size() ){
+            full_path += "#" + this->getFragment();
+        }
+
+        return full_path;
+
+    }
+
+
     bool Url::isIpv6() const{
         return this->ipv6_host;
     }

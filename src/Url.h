@@ -47,6 +47,7 @@ namespace homer6{
             const multimap<string,string>& getQueryParameters() const;
             string getFragment() const;
 
+            string getFullPath() const; //path + query + fragment
 
             void fromString( const std::string& s );
 
