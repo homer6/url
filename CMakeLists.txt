@@ -11,7 +11,7 @@ set( URL_TEST_COMPILE_OPTIONS
     -std=c++17
 )
 
-add_executable( url_test src/main_test.cc src/Url.cc )
+add_executable( url_test src/main_test.cc src/Url.cc src/UrlList.cc )
 set_target_properties( url_test
     PROPERTIES
     COMPILE_OPTIONS          "${URL_TEST_COMPILE_OPTIONS}"

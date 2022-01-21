@@ -1,6 +1,8 @@
 #include "Url.h"
+#include "UrlList.h"
 
 using homer6::Url;
+using homer6::UrlList;
 
 #include <iostream>
 using std::cout;
@@ -56,6 +58,26 @@ bool test_url( const string& url_source, const string& scheme, const string& use
 }
 
 
+bool test_url_list( const string& url_source, const string& scheme ){
+
+    bool success = true;
+
+    UrlList url_list{ url_source };
+
+    cout << endl << url_source << endl;
+
+    if( !equal(url_list.getScheme(), scheme) ) success = false;
+
+    if( success ){
+        cout << "PASSED" << endl;
+    }else{
+        cout << "FAILED" << endl;
+    }
+
+    return success;
+
+}
+
 
 
 int main(){
@@ -96,6 +118,11 @@ int main(){
     if( test_url( "http://example.com/?a=1&b=2+2&c=3&c=4&d=%65%6e%63%6F%64%65%64", "http", "", "", "example.com", 80, "/", "a=1&b=2+2&c=3&c=4&d=%65%6e%63%6F%64%65%64", "", false, false )){ success_count++; } test_count++;
 
     if( test_url( "postgresql://username@localhost/dbname?connect_timeout=10&application_name=myapp&ssl=true", "postgresql", "username", "", "localhost", 5432, "/dbname", "connect_timeout=10&application_name=myapp&ssl=true", "", true, false )){ success_count++; } test_count++;
+
+
+    if( test_url_list( "https://example.com/,https://example2.com/", "https" )){ success_count++; } test_count++;
+
+    cout << endl;
 
 
     Url url("ssh://alice@example.com");

@@ -6,3 +6,5 @@
 /url_profile
 /gmon.out
 /outfile.txt
+/.idea
+/cmake-build-debug
